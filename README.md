@@ -148,8 +148,7 @@ audit-reports/审计报告-<系统>-<日期>.md   # 仅在用户显式授权后�
 
 ### 代码审计 skill 交流群
 
-有问题、建议或实战经验分享？欢迎加入交流群一起探讨。
+<img width="450" height="680" alt="群聊：代码审计skill交流群" src="https://github.com/user-attachments/assets/60bea1d5-be2e-4234-857e-9d4396733595" />
 
-<img src="examples/群聊：代码审计skill交流群.png" alt="代码审计skill交流群" width="300">
 
 </div>
