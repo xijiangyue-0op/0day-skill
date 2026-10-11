@@ -4,10 +4,10 @@
 
 ## 推荐环境
 
-| 组合 | 客户端 | 模型 | 特点 |
-|---|---|---|---|
-| **首选** | [ZCode](https://z.ai) | GLM-5.3 | 无限流、子代理并行 ≤6、语义判定力强 |
-| 备选 | [DeepSeek Harness](https://www.deepseek.com) | deepseek-v4.1-flash | 有限流（并发 ≤5 / 20 次每分钟）但成本更低 |
+| 组合 | 客户端 | 模型 |
+|---|---|---|
+| **首选** | [ZCode](https://z.ai) | GLM-5.3 |
+| 备选 | [DeepSeek Harness](https://www.deepseek.com) | deepseek-v4.1-flash |
 
 > 两者技能体系同源（角色卡单源共享），审计方法论与判定口径完全一致，仅派发调度层因限流差异适配。
 
