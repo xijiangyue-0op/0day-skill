@@ -2,14 +2,14 @@
 
 一套可移植的提示词工程资产：把支持「技能 + 子代理」的 AI 编码客户端（ZCode、Claude Code 等兼容 .agents 目录结构的客户端）变成**多智能体白盒代码审计流水线**——总指挥派发侦察/搜索/污点追踪/终审四级子代理，以磁盘状态实现断点续审与无限深度探索。
 
-> 实战背景：该框架已在 7 个真实目标上完成审计并经双引擎交叉复审（.NET WinForms 胖客户端、Java Struts/Spring、PHP 设备固件、Perl 邮件网关、Java 安平平台），累计产出 80+ 独立通杀漏洞。所有规则均来自实战复盘迭代，非理论设计。
+> 实战背景：该框架已在 7 个真实目标上完成审计（.NET WinForms 胖客户端、Java Struts/Spring、PHP 设备固件、Perl 邮件网关、Java 安平平台），累计产出 80+ 独立通杀漏洞。所有规则均来自实战复盘迭代，非理论设计。
 
 ## 核心理念
 
 1. **状态在磁盘，会话是消耗品** — 审计进度全量落盘 `audit-state/`，会话崩溃/超时/压缩零损失，任何新会话一句话续审。
 2. **有限空间，无限探索** — 单个智能体上下文有限，但覆盖度矩阵（模块 × 漏洞类）的每个格子永远由全新子代理接手；深度轮次（depth-1/2/3…N）无上限，推进与停止由用户发起。
 3. **总指挥不干粗活** — 派发、验收、语义裁定、轮末维护归主控；一切代码阅读归子代理。主控上下文只进摘要，不进代码转储。
-4. **双引擎互补** — 第一引擎全程审计（广度+穷举），第二引擎复审（判卷：共同根基复核、最新判定验证、近失链重判、覆盖面抽验）。
+4. **对抗式复核** — verifier 子代理对 tracer 结论独立重判（历史实测改判率 4%~16%），随机抽验与行号亲验把误报压在交付前。
 
 ## 支持的漏洞类别（六类白名单）
 
@@ -76,17 +76,6 @@ audit-state/
 audit-reports/审计报告-<系统>-<日期>.md   # 仅在用户显式授权后生成
 ```
 
-## 双引擎复审（强烈建议）
-
-第一引擎审计完成后，第二引擎（建议换更强模型）只读结论层判卷：
-
-1. **共同根基复核** — 多条 finding 共享的技术前提（鉴权链定论、会话机制），前提翻则成片塌方；
-2. **最新判定验证** — 刚立档/刚降级的 finding 最热乎也最脆弱；
-3. **近失链重判** — chains.md 里"缺第 N 问"的条件链是历史翻案率最高处；
-4. **覆盖面抽验** — excluded 理由 / 饱和度是否报早 / 计数口径。
-
-模板见 [docs/review-prompt-template.md](docs/review-prompt-template.md)。
-
 ## 目录结构
 
 ```
@@ -95,8 +84,6 @@ audit-orchestrator/
 │   ├── skills/audit-orchestrator/SKILL.md
 │   ├── agents/{recon,sink-hunter,taint-tracer,verifier,report-writer}-agent.md
 │   └── commands/{audit,audit-status,audit-report}.md
-├── docs/
-│   └── review-prompt-template.md   # 复审提示词模板（判卷）
 └── examples/
     └── finding-example.md          # findings/F-XXX.md 档案示例
 ```
