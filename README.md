@@ -1,6 +1,6 @@
 # Audit Orchestrator — 多智能体白盒代码审计框架
 
-一套可移植的提示词工程资产：把任意支持「技能 + 子代理」的 AI 编码客户端（ZCode、DeepSeek Harness、Claude Code 等）变成**多智能体白盒代码审计流水线**——总指挥派发侦察/搜索/污点追踪/终审四级子代理，以磁盘状态实现断点续审与无限深度探索。
+一套可移植的提示词工程资产：把支持「技能 + 子代理」的 AI 编码客户端（ZCode、Claude Code 等兼容 .agents 目录结构的客户端）变成**多智能体白盒代码审计流水线**——总指挥派发侦察/搜索/污点追踪/终审四级子代理，以磁盘状态实现断点续审与无限深度探索。
 
 > 实战背景：该框架已在 7 个真实目标上完成审计并经双引擎交叉复审（.NET WinForms 胖客户端、Java Struts/Spring、PHP 设备固件、Perl 邮件网关、Java 安平平台），累计产出 80+ 独立通杀漏洞。所有规则均来自实战复盘迭代，非理论设计。
 
@@ -34,8 +34,6 @@
 
 ## 快速开始
 
-### ZCode
-
 ```bash
 # 1. 安装（复制到用户级目录）
 cp -r zcode/skills/* ~/.agents/skills/
@@ -44,18 +42,6 @@ cp -r zcode/commands/*  ~/.agents/commands/
 
 # 2. 打开目标源码目录为工作区，输入
 /audit
-```
-
-### DeepSeek Harness
-
-```bash
-# 1. 安装技能（平铺单文件 .md）
-cp deepseek-harness/skills/*.md ~/.dsh/skills/
-
-# 2. （可选）中转站重试强化：参考 cordis.patch.example.yml
-#    把 retryPolicy/timeoutMs 段合入 ~/.dsh/profiles/desktop/cordis.patch.yml
-
-# 3. 打开目标目录，输入 /audit；需要子代理集群时 /audit-swarm
 ```
 
 ### 通用（其他兼容客户端）
@@ -109,12 +95,8 @@ audit-orchestrator/
 │   ├── skills/audit-orchestrator/SKILL.md
 │   ├── agents/{recon,sink-hunter,taint-tracer,verifier,report-writer}-agent.md
 │   └── commands/{audit,audit-status,audit-report}.md
-├── deepseek-harness/               # DeepSeek Harness 安装包（11 平铺技能 + 限流重试示例）
-│   ├── skills/audit*.md
-│   └── cordis.patch.example.yml    # 中转站 retryPolicy/timeoutMs 强化示例
 ├── docs/
-│   ├── review-prompt-template.md   # 复审提示词模板（判卷）
-│   └── handoff.md                  # 双引擎交接文档示例
+│   └── review-prompt-template.md   # 复审提示词模板（判卷）
 └── examples/
     └── finding-example.md          # findings/F-XXX.md 档案示例
 ```

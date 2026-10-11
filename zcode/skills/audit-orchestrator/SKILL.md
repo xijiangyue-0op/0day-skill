@@ -73,9 +73,9 @@ state.json 结构：
 
 ## 子智能体派发协议
 
-**宿主环境分流**：本卡协议面向 ZCode（Agent 工具、subagent_type: general-purpose、并行 ≤6）。DeepSeek Harness (dsh) 环境有限流（并发≤5、每分钟≤20 次）且用 subagent 工具（spawn）——dsh 会话不要按本卡执行，改用 dsh 侧的 audit / audit-swarm 技能（≤2 并行），角色卡同样在 `~/.agents/audit/agents/`。
+**宿主环境说明**：本卡协议面向 ZCode（Agent 工具、subagent_type: general-purpose、并行 ≤6）。其他客户端按各自子代理工具等价映射即可，角色卡同样在 `~/.agents/audit/agents/`。
 
-角色卡位于 `C:\Users\25680\.agents\audit\agents\`。派发时：Read 角色卡全文，连同任务参数一起注入 Agent 工具的 prompt（subagent_type 用 `general-purpose`）。派发 prompt 必须自包含：目标绝对路径、语言、格子（module×class）、audit-state 绝对路径、角色卡全文。
+角色卡位于 `~/.agents/audit/agents/`。派发时：Read 角色卡全文，连同任务参数一起注入 Agent 工具的 prompt（subagent_type 用 `general-purpose`）。派发 prompt 必须自包含：目标绝对路径、语言、格子（module×class）、audit-state 绝对路径、角色卡全文。
 
 | 角色 | 派发时机 | 并行度 |
 |---|---|---|
