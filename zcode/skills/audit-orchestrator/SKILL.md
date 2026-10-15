@@ -73,21 +73,18 @@ state.json 结构：
 
 ## 子智能体派发协议
 
-**宿主环境说明**：本卡协议面向 ZCode（Agent 工具、subagent_type: general-purpose、并行 ≤2——与 dsh 侧统一口径）。DeepSeek Harness (dsh) 环境用 subagent 工具（spawn），dsh 会话按本卡执行同样成立，角色卡同样在 `~/.agents/audit/agents/`。
+**宿主环境说明**：本卡协议面向 ZCode（Agent 工具、subagent_type: general-purpose、并行 ≤6）。其他客户端按各自子代理工具等价映射即可，角色卡同样在 `~/.agents/audit/agents/`。
 
-角色卡位于 `C:\Users\25680\.agents\audit\agents\`。派发时：Read 角色卡全文，连同任务参数一起注入 Agent 工具的 prompt（subagent_type 用 `general-purpose`）。派发 prompt 必须自包含：目标绝对路径、语言、格子（module×class）、audit-state 绝对路径、角色卡全文。
-
-**全局硬规则：任意时刻在跑子智能体数 ≤2（含侦察阶段）**——多个任务分批派（先 2 后 1），一个结算验收后再补派下一个；超过 2 视为违规，立即停止多余派发。
+角色卡位于 `~/.agents/audit/agents/`。派发时：Read 角色卡全文，连同任务参数一起注入 Agent 工具的 prompt（subagent_type 用 `general-purpose`）。派发 prompt 必须自包含：目标绝对路径、语言、格子（module×class）、audit-state 绝对路径、角色卡全文。
 
 | 角色 | 派发时机 | 并行度 |
 |---|---|---|
 | recon-agent | 审计开始时一次（或模块大改后） | 1 |
-| sink-hunter | 每格子一个，扇出搜索 | ≤2 |
-| taint-tracer | 对候选逐条反向回溯 | ≤2 |
-| verifier | 对闭环链做三问+前端触发点 | ≤2 |
+| sink-hunter | 每格子一个，扇出搜索 | ≤6 并行 |
+| taint-tracer | 对候选逐条反向回溯 | ≤3 |
+| verifier | 对闭环链做三问+前端触发点 | ≤3 |
 
 - 子代理归来先验收产出格式，不合格退回重做（绝不能自己默默重做——那会烧掉你的上下文）。
-- 某个子代理失败/死亡：log.md 记一行，重试 1 次，仍失败就把该格子标回 pending 并继续，绝不中止整体。
 - **单轮规模上限**：一轮累计 step ≥ 150 或派发满 3 个批次或**时钟超过 90 分钟**，必须立即收官（验收已回结算的、其余格子标 pending、执行轮末维护、汇报停等），剩余队列留给下一轮——禁止单轮塞完全部队列。长轮次会把主控上下文推到长程注意力外沿（实测 260 step ≈ 190K），指令遵循与细节保持会衰减。
    - **上下文纪律（命门）**：你不读原始代码大文件、不接受文件内容转储；只读 state.json、recon 摘要、findings 索引；需要细节时打开单个 finding 文件。子代理返回摘要一律 ≤40 行。**>30KB 的全文类读取（state.json/chains.md/pending.md）必须用脚本裁剪或分段取要，禁止整文件进上下文**——上下文总量压不到低处的前提下，内容密度是保住判断质量下限的唯一变量。
    - **容量截断强制闭环**：sink-hunter 汇报 truncated=true 时，余量必须当场开衍生格子排进矩阵——只记 note 不排格等于丢线索，禁止。
